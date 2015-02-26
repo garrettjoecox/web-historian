@@ -1,48 +1,41 @@
 var path = require('path');
-var bodyParser = require('body-parser');
-var httpreq = require('http-request');
-var qs = require('querystring');
-var fs = require('fs');
 var archive = require('../helpers/archive-helpers');
-var cors = require('./http-helpers');
-// require more modules/folders here!
+var httpHelper = require('./http-helpers.js');
+var fs = require('fs');
+var qs = require('querystring')
 
 var handler = {
   GET: function(req, res){
-
     if(req.url === '/'){
-      console.log("Received get home");
-      res.writeHead(200, cors.headers);
-      res.end(fs.readFileSync(archive.paths.siteAssets + "/index.html", 'utf8'))
-    }else if(fs.existsSync(archive.paths.archivedSites + "/" + req.url)){
-      console.log("Recieved Get specified site");
-      res.writeHead(200, cors.headers);
-      res.end(fs.readFileSync(archive.paths.archivedSites + "/" + req.url, 'utf8'))
-    }else{
-      console.log("Recieved Get unknown site");
-      res.writeHead(404, cors.headers);
-      res.end();
-    }
-
-  },
-  POST: function(req, res){
-    res.writeHead(302, cors.headers);
-    var body = ""
-    req.on('data', function(data){
-      body+= data;
-      console.log(qs.parse(body).url);
-      if(fs.existsSync(archive.paths.archivedSites + "/" + qs.parse(body).url)){
-        console.log("Received Post, Existed and returned");
-        res.end(fs.readFileSync(archive.paths.archivedSites + "/" + qs.parse(body).url + "/index.html", 'utf8'));
-      } else {
-        console.log("Received Post, Didn't exist");
-        if(!archive.isUrlInList(qs.parse(body).url)){
-          console.log("Added to queue");
-          archive.addUrlToList(qs.parse(body).url);
+      httpHelper.serveAssets(res, archive.paths.siteAssets + '/index.html', 200);
+    } else {
+      fs.exists(archive.paths.archivedSites + '/' + req.url, function(exists){
+        if(exists){
+          httpHelper.serveAssets(res, archive.paths.archivedSites + '/' + req.url, 200);
+        } else {
+          httpHelper.serveAssets(res, archive.paths.siteAssets + '/index.html', 404);
         }
-        res.end(fs.readFileSync(archive.paths.siteAssets + "/loading.html", 'utf8'))
-      }
+      })
+    }
+  },
+
+  POST: function(req, res){
+    var body = '';
+    req.on('data', function(data){
+      body += data;
     });
+    req.on('end', function(){
+      var url = qs.parse(body).url
+      fs.exists(archive.paths.archivedSites + '/' + url, function(exists){
+        if(exists){
+          httpHelper.serveAssets(res, archive.paths.archivedSites + '/' + url, 302);
+        } else {
+          httpHelper.serveAssets(res, archive.paths.siteAssets + '/loading.html', 302);
+          archive.addUrlToList(url);
+        }
+      })
+    })
+
   }
 
 };
@@ -50,4 +43,3 @@ var handler = {
 exports.handleRequest = function (req, res) {
   handler[req.method](req, res);
 };
-
