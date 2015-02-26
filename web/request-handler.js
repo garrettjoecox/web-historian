@@ -6,12 +6,14 @@ var qs = require('querystring');
 
 var handler = {
   GET: function(req, res){
-    if(req.url === '/'){
+    if(req.url.substring(0,7) === 'http://') req.url = req.url.substring(7);
+    if(req.url.substring(0,4) === 'www.') req.url = req.url.substring(4);
+    if(req.url === '/' || req.url === ""){
       httpHelper.serveAssets(res, archive.paths.index, 200);
     } else {
-      fs.exists(archive.paths.archivedSites + '/' + req.url, function(exists){
+      archive.isURLArchived(req.url, function(exists){
         if(exists){
-          httpHelper.serveAssets(res, archive.paths.archivedSites + '/' + req.url, 200);
+          httpHelper.serveAssets(res, archive.paths.archivedSites + req.url, 200);
         } else {
           httpHelper.serveAssets(res, archive.paths.index, 404);
         }
@@ -26,9 +28,12 @@ var handler = {
     });
     req.on('end', function(){
       var url = qs.parse(body).url;
-      fs.exists(archive.paths.archivedSites + '/' + url, function(exists){
+      // if(url === undefined) return;
+      if(url.substring(0,7) === 'http://') url = url.substring(7);
+      if(url.substring(0,4) === 'www.') url = url.substring(4);
+      archive.isURLArchived(url, function(exists){
         if(exists){
-          httpHelper.serveAssets(res, archive.paths.archivedSites + '/' + url, 302);
+          httpHelper.serveAssets(res, archive.paths.archivedSites + url, 302);
         } else {
           httpHelper.serveAssets(res, archive.paths.loading, 302);
           archive.addUrlToList(url);

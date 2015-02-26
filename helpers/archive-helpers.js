@@ -5,7 +5,7 @@ var request = require('http-request');
 
 exports.paths = {
   'siteAssets' : path.join(__dirname, '../web/public'),
-  'archivedSites' : path.join(__dirname, '../archives/sites'),
+  'archivedSites' : path.join(__dirname, '../archives/sites/'),
   'list' : path.join(__dirname, '../archives/sites.txt'),
   'index' : path.join(__dirname, '../web/public/index.html'),
   'loading' : path.join(__dirname, '../web/public/loading.html'),
@@ -32,6 +32,7 @@ exports.isUrlInList = function(target, callback){
 };
 
 exports.addUrlToList = function(url){
+  url = url.toLowerCase();
   exports.isUrlInList(url, function(flag){
     if(!flag && url !== undefined){
       fs.appendFile(exports.paths.list, url + '\n');
@@ -39,17 +40,20 @@ exports.addUrlToList = function(url){
   });
 };
 
-exports.isURLArchived = function(){
+exports.isURLArchived = function(target, callback){
+  fs.exists(exports.paths.archivedSites + target, function(exists){
+    return callback(exists);
+  });
 };
 
 exports.downloadUrls = function(){
   exports.readListOfUrls(function(list){
     _.each(list, function(site){
-      fs.exists(exports.paths.archivedSites + '/' + site, function(exists){
-        if(!exists){
+      exports.isURLArchived(site, function(result){
+        if(!result){
           request.get(site, function(err, res){
             if (res){
-              fs.writeFile(exports.paths.archivedSites + '/' + site, res.buffer.toString());
+              fs.writeFile(exports.paths.archivedSites + site, res.buffer.toString());
             }
           });
         }
