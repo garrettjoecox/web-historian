@@ -33,7 +33,7 @@ var handler = {
       console.log(qs.parse(body).url);
       if(fs.existsSync(archive.paths.archivedSites + "/" + qs.parse(body).url)){
         console.log("Received Post, Existed and returned");
-        res.end(fs.readFileSync(archive.paths.archivedSites + "/" + req.url, 'utf8'))
+        res.end(fs.readFileSync(archive.paths.archivedSites + "/" + qs.parse(body).url + "/index.html", 'utf8'));
       } else {
         console.log("Received Post, Didn't exist");
         if(!archive.isUrlInList(qs.parse(body).url)){

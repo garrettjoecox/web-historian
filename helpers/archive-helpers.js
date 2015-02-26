@@ -1,6 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var request = require('http-request');
+var qs = require('querystring');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -35,15 +37,31 @@ exports.readListOfUrls = function(func){
 exports.isUrlInList = function(target){
   var list = fs.readFileSync(exports.paths.list, 'utf8');
   var split = list.split('\n');
-  return _.contains(split, target.toUpperCase());
+  var flag = false
+  _.each(split, function(item){
+    if (item.toUpperCase() === target.toUpperCase()) flag = true;
+  })
+  return flag;
 };
 
 exports.addUrlToList = function(site){
-  fs.appendFileSync(exports.paths.list, site.toUpperCase() + '\n');
+  fs.appendFileSync(exports.paths.list, site + '\n');
 };
 
 exports.isURLArchived = function(){
 };
 
 exports.downloadUrls = function(){
+  var list = exports.readListOfUrls(function(item){
+    return item;
+  });
+  _.each(list, function(site){
+    if(!fs.existsSync(exports.paths.archivedSites + "/" + site)){
+      fs.mkdirSync(exports.paths.archivedSites + "/" + site);
+      request.get(site, function(error, res){
+        console.log(exports.paths.archivedSites + "/" + site + "/index.html")
+        fs.writeFileSync(exports.paths.archivedSites + "/" + site + "/index.html", res.buffer.toString());
+      })
+    }
+  })
 };
