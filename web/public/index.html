@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="styles.css" />
+  <style>
+    body {
+      text-align: center;
+      margin : 40px;
+      font-family: arial, sans-serif;
+    }
+    input {
+      -webkit-appearance: searchfield;
+      width: 200px;
+    }
+  </style>
 </head>
 <body>
-  Enter a URL here:
-  <form method="POST" action="http://127.0.0.1:8080/">
-    <input type="input" name="url"></input>
+  <h1>Web Historian</h1>
+  <form method="POST">
+    <input type="text" placeholder="Enter a URL here" name="url"></input>
   </form>
-  <script>
-  </script>
 </body>
 </html>

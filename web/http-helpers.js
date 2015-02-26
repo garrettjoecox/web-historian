@@ -11,9 +11,9 @@ exports.headers = headers = {
 };
 
 exports.serveAssets = function(res, asset, statusCode) {
-  console.log('Serving: ', asset, statusCode)
+  console.log('Serving: ', asset, statusCode);
   res.writeHead(statusCode, exports.headers);
   fs.readFile(asset, function(err, data){
     res.end(data);
-  })
+  });
 };

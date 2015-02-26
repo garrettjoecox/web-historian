@@ -1,12 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="styles.css" />
+  <style>
+    body {
+      text-align: center;
+      margin : 40px;
+      font-family: arial, sans-serif;
+    }
+    input {
+      -webkit-appearance: searchfield;
+      width: 200px;
+    }
+  </style>
 </head>
 <body>
+  <h1>Web Historian</h1>
   <form method="POST">
-    <input type="input" name="url"></input>
+    <input type="text" placeholder="Enter a URL here" name="url"></input>
   </form>
-  Our robots are currently archiving the site you requested. Please check back soon for a freshly embalmed copy!
+  <p> Our highly trained monkeys are currently archiving the site you requested.
+  <br> Please check back soon for a freshly embalmed copy!
 </body>
 </html>
