@@ -1,7 +1,16 @@
-var fs = require('fs');
-var path = require('path');
-var _ = require('underscore');
 var request = require('http-request');
+var _ = require('underscore');
+var path = require('path');
+var fs = require('fs');
+
+exports.urlize = function(url){
+  url = url.toLowerCase();
+  if(url.substring(0,8) === 'https://') url = url.substring(8);
+  if(url.substring(0,7) === 'http://') url = url.substring(7);
+  if(url.substring(0,4) === 'www.') url = url.substring(4);
+  if(url.substring(url.length-4).indexOf('.') === -1) url = url + ".com";
+  return url;
+};
 
 exports.paths = {
   'siteAssets' : path.join(__dirname, '../web/public'),
@@ -20,7 +29,6 @@ exports.initialize = function(pathsObj){
 exports.readListOfUrls = function(callback){
   fs.readFile(exports.paths.list, 'utf8', function(error, data){
     var list = data.split('\n');
-    list.pop();
     return callback(list);
   });
 };
