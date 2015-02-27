@@ -32,9 +32,10 @@ exports.isUrlInList = function(target, callback){
 };
 
 exports.addUrlToList = function(url){
-  url = url.toLowerCase();
+  if (typeof url === 'string') url = url.toLowerCase();
   exports.isUrlInList(url, function(flag){
     if(!flag && url !== undefined){
+      console.log("Added " + url + " to queue");
       fs.appendFile(exports.paths.list, url + '\n');
     }
   });

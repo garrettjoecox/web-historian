@@ -17,3 +17,13 @@ exports.serveAssets = function(res, asset, statusCode) {
     res.end(data);
   });
 };
+
+exports.urlparse = function(url){
+  if (!url) return;
+  newUrl = url;
+  if(newUrl.substring(0,8) === 'https://') newUrl = newUrl.substring(8);
+  if(newUrl.substring(0,7) === 'http://') newUrl = newUrl.substring(7);
+  if(newUrl.substring(0,4) === 'www.') newUrl = newUrl.substring(4);
+  if(newUrl.substring(newUrl.length-4).indexOf('.') === -1) newUrl = newUrl + ".com";
+  return newUrl;
+};
