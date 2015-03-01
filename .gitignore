@@ -1,6 +1,3 @@
-archives/*
-archives/*.txt
-
 ###OSX###
 
 .DS_Store
