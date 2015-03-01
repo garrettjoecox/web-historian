@@ -1,2 +1,2 @@
-var archive = require('../helpers/archive-helpers.js');
-archive.downloadUrls();
+var helpers = require('../web/helpers');
+helpers.downloadUrls();
