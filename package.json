@@ -20,7 +20,6 @@
     "underscore": "^1.6.0"
   },
   "scripts": {
-    "test": "node ./web/basic-server.js & mocha test/test.js; RES=$?; kill %1; exit $RES",
-    "start": "node ./web/basic-server.js"
+    "start": "node ./web/server.js"
   }
 }

@@ -14,6 +14,10 @@ app.get('/', function(req, res){
   console.log("GET: ", helpers.paths.index);
 });
 
+app.get('/sites', function(req, res){
+  res.sendFile(helpers.paths.list);
+});
+
 app.post('/', function(req, res){
   var site = helpers.urlize(req.body.url);
   console.log("POST: ", site);

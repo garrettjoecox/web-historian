@@ -41,10 +41,16 @@ exports.isUrlInList = function(target, callback){
 
 exports.addUrlToList = function(url){
   if (typeof url === 'string') url = url.toLowerCase();
-  exports.isUrlInList(url, function(flag){
-    if(!flag && url !== undefined){
-      console.log("Added " + url + " to queue");
-      fs.appendFile(exports.paths.list, url + '\n');
+  request.get(url, function(err){
+    if (!err){
+      exports.isUrlInList(url, function(flag){
+        if(!flag && url !== undefined){
+          console.log("Added " + url + " to queue");
+          fs.appendFile(exports.paths.list, url + '\n');
+        }
+      });
+    }else{
+      console.log("Couldn't GET: ", url);
     }
   });
 };
